@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>她终于点头，他却摇头走了 - 阅读</title>
+    <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --accent-color: #1976D2;
+            --hover-color: #42A5F5;
+            --border-color: #e0e0e0;
+            --shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color:transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .dark-mode {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-color: #e0e0e0;
+            --border-color: #404040;
+            --shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .header {
+            background-color: var(--card-bg);
+            padding: 1rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .header-main-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 0;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: none;
+            border: none;
+            color: var(--accent-color);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .header-chapter-title {
+            max-width: 400px;
+            font-size: 1rem;
+            color: var(--text-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-mobile-title {
+            display: none;
+            font-size: 0.95rem;
+            color: var(--text-color);
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        .back-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--accent-color);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .font-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .font-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .font-btn:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .content-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .chapter-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: var(--accent-color);
+            text-align: center;
+        }
+
+        .chapter-content {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .chapter-content p {
+            margin-bottom: 1rem;
+            text-indent: 2em;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-btn {
+            padding: 0.8rem 2rem;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background-color: var(--hover-color);
+        }
+
+        .nav-btn:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: var(--accent-color);
+        }
+
+        .icon {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 0.6rem 0.6rem;
+            }
+
+            .header-main-row {
+                gap: 0.4rem;
+            }
+
+            .controls {
+                gap: 0.4rem;
+            }
+
+            .font-controls {
+                gap: 0.25rem;
+            }
+
+            .header-chapter-title {
+                display: none;
+            }
+
+            .back-btn {
+                padding: 0.3rem 0.5rem;
+                font-size: 0.8rem;
+            }
+
+            .font-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 1.2rem;
+            }
+
+            .btn {
+                padding: 0.35rem 0.6rem;
+                font-size: 0.8rem;
+                min-height: 30px;
+            }
+
+            .content-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .chapter-title {
+                font-size: 1.3rem;
+                margin-bottom: 1rem;
+            }
+
+            .chapter-content {
+                font-size: 15px;
+                line-height: 1.7;
+            }
+
+            .chapter-content p {
+                margin-bottom: 0.8rem;
+            }
+
+            .navigation {
+                margin-top: 1.5rem;
+                gap: 0.5rem;
+            }
+
+            .header.show-mobile-title .header-mobile-title {
+                display: block;
+                font-size: 0.9rem;
+            }
+
+            .nav-btn {
+                padding: 0.7rem 1.5rem;
+                font-size: 0.9rem;
+                flex: 1;
+                min-width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-main-row">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                    </svg>
+                    返回
+                </button>
+                <span id="chapterHeaderTitle" class="header-chapter-title"></span>
+            </div>
+            <div class="controls">
+                <div class="font-controls">
+                    <button class="font-btn" onclick="changeFontSize(-1)">-</button>
+                    <span id="fontSizeDisplay">16px</span>
+                    <button class="font-btn" onclick="changeFontSize(1)">+</button>
+                </div>
+                <button class="btn btn-outline" onclick="toggleDarkMode()">
+                    <svg class="icon" id="sunIcon" viewBox="0 0 24 24" style="display: none;">
+                        <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+                    </svg>
+                    <svg class="icon" id="moonIcon" viewBox="0 0 24 24">
+                        <path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="mobileHeaderTitle" class="header-mobile-title"></div>
+    </div>
+
+    <div class="content-container">
+        <div id="content">
+            <div class="loading">加载中...</div>
+        </div>
+    </div>
+
+    <script>
+        let chapters = [];
+        let currentChapter = 0;
+        let fontSize = 16;
+        let isDarkMode = false;
+        let chapterTitleObserver = null;
+
+        function setupChapterObserver() {
+            if (chapterTitleObserver) {
+                chapterTitleObserver.disconnect();
+            }
+
+            const titleElement = document.querySelector('.chapter-title');
+            const headerElement = document.querySelector('.header');
+
+            if (!titleElement || !headerElement) {
+                return;
+            }
+
+            chapterTitleObserver = new IntersectionObserver(function (entries) {
+                const entry = entries[0];
+                if (window.innerWidth <= 768) {
+                    if (entry && !entry.isIntersecting) {
+                        headerElement.classList.add('show-mobile-title');
+                    } else {
+                        headerElement.classList.remove('show-mobile-title');
+                    }
+                } else {
+                    headerElement.classList.remove('show-mobile-title');
+                }
+            });
+
+            chapterTitleObserver.observe(titleElement);
+        }
+
+        // 加载小说数据
+        async function loadChapters() {
+            try {
+                const response = await fetch('TEXT.json');
+                chapters = await response.json();
+
+                // 从URL获取章节索引
+                const urlParams = new URLSearchParams(window.location.search);
+                const chapterParam = urlParams.get('chapter');
+
+                // 从localStorage读取上次阅读的章节索引
+                const lastChapter = localStorage.getItem('lastChapter');
+                const lastFontSize = localStorage.getItem('fontSize');
+                const lastDarkMode = localStorage.getItem('darkMode');
+
+                // 确定要加载的章节
+                if (chapterParam !== null) {
+                    currentChapter = parseInt(chapterParam);
+                } else if (lastChapter !== null) {
+                    currentChapter = parseInt(lastChapter);
+                }
+
+                // 恢复字体大小
+                if (lastFontSize !== null) {
+                    fontSize = parseInt(lastFontSize);
+                    document.getElementById('fontSizeDisplay').textContent = fontSize + 'px';
+                }
+
+                // 恢复夜间模式
+                if (lastDarkMode === 'true') {
+                    isDarkMode = true;
+                    document.body.classList.add('dark-mode');
+                    document.getElementById('sunIcon').style.display = 'block';
+                    document.getElementById('moonIcon').style.display = 'none';
+                }
+
+                loadChapter(currentChapter);
+            } catch (error) {
+                console.error('加载小说数据失败:', error);
+                document.getElementById('content').innerHTML = '<div class="loading">加载失败，请检查TEXT.json文件是否存在</div>';
+            }
+        }
+
+        function loadChapter(index) {
+            if (index < 0 || index >= chapters.length) return;
+
+            currentChapter = index;
+            const chapter = chapters[index];
+
+            const headerTitle = document.getElementById('chapterHeaderTitle');
+            if (headerTitle) {
+                headerTitle.textContent = chapter.title;
+            }
+
+            const mobileHeaderTitle = document.getElementById('mobileHeaderTitle');
+            if (mobileHeaderTitle) {
+                mobileHeaderTitle.textContent = chapter.title;
+            }
+
+            localStorage.setItem('lastChapter', index);
+
+            const newUrl = new URL(window.location);
+            newUrl.searchParams.set('chapter', index);
+            window.history.replaceState({}, '', newUrl);
+
+            let text = chapter.text;
+
+            text = text.replace(/\n\n/g, '【段落分隔】');
+            text = text.replace(/\n/g, '<br>');
+            text = text.replace(/【段落分隔】/g, '</p><p>');
+
+            const content = `
+                <h1 class="chapter-title">${chapter.title}</h1>
+                <div class="chapter-content" style="font-size: ${fontSize}px;">
+                    <p>${text}</p>
+                </div>
+                <div class="navigation">
+                    <button class="nav-btn" onclick="prevChapter()" ${index === 0 ? 'disabled' : ''}>上一章</button>
+                    <button class="nav-btn" onclick="nextChapter()" ${index === chapters.length - 1 ? 'disabled' : ''}>下一章</button>
+                </div>
+            `;
+            document.getElementById('content').innerHTML = content;
+
+            window.scrollTo(0, 0);
+            setupChapterObserver();
+        }
+
+        // 上一章
+        function prevChapter() {
+            if (currentChapter > 0) {
+                loadChapter(currentChapter - 1);
+            }
+        }
+
+        // 下一章
+        function nextChapter() {
+            if (currentChapter < chapters.length - 1) {
+                loadChapter(currentChapter + 1);
+            }
+        }
+
+        // 调整字体大小
+        function changeFontSize(delta) {
+            fontSize = Math.max(12, Math.min(24, fontSize + delta));
+            document.getElementById('fontSizeDisplay').textContent = fontSize + 'px';
+
+            // 保存字体大小到localStorage
+            localStorage.setItem('fontSize', fontSize);
+
+            const content = document.querySelector('.chapter-content');
+            if (content) {
+                content.style.fontSize = fontSize + 'px';
+            }
+        }
+
+        // 切换深浅模式
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark-mode', isDarkMode);
+
+            // 保存夜间模式状态到localStorage
+            localStorage.setItem('darkMode', isDarkMode);
+
+            // 切换SVG图标
+            const sunIcon = document.getElementById('sunIcon');
+            const moonIcon = document.getElementById('moonIcon');
+
+            if (isDarkMode) {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            } else {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            }
+        }
+
+        // 返回首页
+        function goBack() {
+            window.location.href = 'index.html';
+        }
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                prevChapter();
+            } else if (e.key === 'ArrowRight') {
+                nextChapter();
+            }
+        });
+
+        // 初始化
+        loadChapters();
+    </script>
+</body>
+</html>
