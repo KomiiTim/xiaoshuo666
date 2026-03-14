@@ -384,7 +384,7 @@
         // 加载小说数据
         async function loadChapters() {
             try {
-                const response = await fetch('TEXT.json');
+                const response = await fetch('text.json');
                 chapters = await response.json();
 
                 // 从URL获取章节索引
