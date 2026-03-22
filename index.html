@@ -491,11 +491,19 @@
                 // 显示加载状态
                 document.getElementById('chapterGrid').innerHTML = '<div class="loading">正在快速加载章节数据...</div>';
                 
+                // 自动检测文件修改时间，无需手动改版本号
+                const cacheVersion = localStorage.getItem('titles_cache_version') || '0';
+                // 获取文件最后修改时间作为版本号
+                const currentVersion = await getFileVersion();
+                
                 // 使用轻量级的titles.json文件（仅包含标题信息）
-                const response = await fetch('titles.json', {
-                    cache: 'force-cache',
+                // 智能缓存策略：版本更新时强制刷新，否则使用缓存
+                const timestamp = new Date().getTime();
+                const cacheBuster = cacheVersion !== currentVersion ? `?t=${timestamp}` : '';
+                const response = await fetch(`titles.json${cacheBuster}`, {
+                    cache: cacheVersion !== currentVersion ? 'no-cache' : 'force-cache',
                     headers: {
-                        'Cache-Control': 'max-age=3600'
+                        'Cache-Control': cacheVersion !== currentVersion ? 'no-cache' : 'max-age=3600'
                     }
                 });
                 
@@ -517,6 +525,12 @@
 
                 // 从localStorage读取上次阅读的章节索引
                 lastChapter = localStorage.getItem('lastChapter');
+
+                // 如果版本更新，保存新版本号
+                if (cacheVersion !== currentVersion) {
+                    localStorage.setItem('titles_cache_version', currentVersion);
+                    console.log('📚 章节数据缓存已更新到版本:', currentVersion);
+                }
 
                 // 更新阅读按钮
                 updateReadButton();
@@ -644,6 +658,31 @@
             }
         }
 
+        // 自动获取文件版本（基于最后修改时间）
+        async function getFileVersion() {
+            try {
+                // 发送HEAD请求获取文件信息
+                const response = await fetch('titles.json', {
+                    method: 'HEAD',
+                    cache: 'no-cache'
+                });
+                
+                if (response.ok) {
+                    // 获取最后修改时间戳
+                    const lastModified = response.headers.get('last-modified');
+                    if (lastModified) {
+                        // 将时间戳转换为版本号
+                        return new Date(lastModified).getTime().toString();
+                    }
+                }
+            } catch (error) {
+                console.error('获取文件版本失败:', error);
+            }
+            
+            // 如果获取失败，返回当前时间戳作为备用
+            return Date.now().toString();
+        }
+
         // 显示图片大图
         function showImage(src) {
             const modal = document.createElement('div');
@@ -662,7 +701,7 @@
             `;
             
             const img = document.createElement('img');
-            img.src = '封面-last-komii.png';
+            img.src = src;
             img.style.cssText = `
                 max-width: 90%;
                 max-height: 90%;
